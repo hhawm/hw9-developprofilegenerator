@@ -1,58 +1,59 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
 const util = require("util");
+const axios = require("axios");
 
 const writeFileAsync = util.promisify(fs.writeFile);
 
 const colors = {
-    green: {
-        wrapperBackground: "#E6E1C3",
-        headerBackground: "#C1C72C",
-        headerColor: "black",
-        photoBorderColor: "#black"
-    },
-    blue: {
-        wrapperBackground: "#5F64D3",
-        headerBackground: "#26175A",
-        headerColor: "white",
-        photoBorderColor: "#73448C"
-    },
-    pink: {
-        wrapperBackground: "#879CDF",
-        headerBackground: "#FF8374",
-        headerColor: "white",
-        photoBorderColor: "#FEE24C"
-    },
-    red: {
-        wrapperBackground: "#DE9967",
-        headerBackground: "#870603",
-        headerColor: "white",
-        photoBorderColor: "white"
-    }
+  green: {
+    wrapperBackground: "#E6E1C3",
+    headerBackground: "#C1C72C",
+    headerColor: "black",
+    photoBorderColor: "#black"
+  },
+  blue: {
+    wrapperBackground: "#5F64D3",
+    headerBackground: "#26175A",
+    headerColor: "white",
+    photoBorderColor: "#73448C"
+  },
+  pink: {
+    wrapperBackground: "#879CDF",
+    headerBackground: "#FF8374",
+    headerColor: "white",
+    photoBorderColor: "#FEE24C"
+  },
+  red: {
+    wrapperBackground: "#DE9967",
+    headerBackground: "#870603",
+    headerColor: "white",
+    photoBorderColor: "white"
+  }
 };
 function promptUser() {
-    return inquirer.prompt([
-        {
-            type: "input",
-            message: "What is GitHub user name?",
-            name: "name"
-        },
-        {
-            type: "list",
-            message: "Pick a color",
-            name: "color",
-            choices: [
-                "green",
-                "blue",
-                "pink",
-                "red"
-            ]
-        }
-    ]);
+  return inquirer.prompt([
+    {
+      type: "input",
+      message: "What is GitHub user name?",
+      name: "name"
+    },
+    {
+      type: "list",
+      message: "Pick a color",
+      name: "color",
+      choices: [
+        "green",
+        "blue",
+        "pink",
+        "red"
+      ]
+    }
+  ]);
 }
 
 function generateHTML(data) {
-    return `
+  return `
     <!DOCTYPE html>
     <html lang="en">
        <head>
@@ -216,15 +217,30 @@ function generateHTML(data) {
   </html>`;
 }
 
-promptUser()
-    .then(function (data) {
-        const html = generateHTML(data);
 
-        return writeFileAsync("index.html", html);
-    })
-    .then(function () {
-        console.log("Successfully wrote to index.html");
-    })
-    .catch(function (err) {
-        console.log(err);
-    });
+async function createMain() {
+  const data = await promptUser();
+  console.log(data);
+
+  const response = await axios.get(`https://api.github.com/users/${data.username}`);
+  console.log(response);
+
+  const html = generateHTML(data);
+  return writeFileAsync("index.html", html);
+
+};
+
+createMain();
+
+// promptUser()
+//   .then(function (data) {
+//     const html = generateHTML(data);
+
+//     return writeFileAsync("index.html", html);
+//   })
+//   .then(function () {
+//     console.log("Successfully wrote to index.html");
+//   })
+//   .catch(function (err) {
+//     console.log(err);
+//   });
