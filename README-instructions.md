@@ -1,13 +1,12 @@
-# Unit 09 Node.js and ES6+ Homework: 
-# Developer Profile Generator
+# Unit 09 Node.js and ES6+ Homework: Developer Profile Generator
 
-The user will be prompted for a GitHub username, and this profile generator application will dynamically generate a PDF profile. The application will be invoked with the following command:
+Create a command-line application that dynamically generates a PDF profile from a GitHub username. The application will be invoked with the following command:
 
 ```sh
 node index.js
 ```
 
-The user will also be prompted to choose a color (green, blue, pink, or red) which will be used as the background color for cards.
+The user will be prompted for a favorite color, which will be used as the background color for cards.
 
 The PDF will be populated with the following:
 
@@ -23,7 +22,7 @@ The PDF will be populated with the following:
 * Number of GitHub stars
 * Number of users following
 
-Given user story:
+Following the [common templates for user stories](https://en.wikipedia.org/wiki/User_story#Common_templates), we can frame this challenge as follows:
 
 ```
 AS A product manager

@@ -36,7 +36,7 @@ function promptUser() {
     {
       type: "input",
       message: "What is GitHub user name?",
-      name: "name"
+      name: "username"
     },
     {
       type: "list",
@@ -204,7 +204,7 @@ function generateHTML(data) {
   </head>
   <body>
     <div class="container main">
-      <h1 class="display-4">Hi! My GitHub username is ${data.github}</h1>
+      <h1 class="display-4">Hi! My GitHub username is ${data.username}</h1>
       <p class="lead">My color is ${data.color}.</p>
       <h3>Example heading <span class="badge badge-secondary">Contact Me</span></h3>
       <ul class="list-group">
@@ -220,10 +220,13 @@ function generateHTML(data) {
 
 async function createMain() {
   const data = await promptUser();
-  console.log(data);
+  console.log(data.username);
 
   const response = await axios.get(`https://api.github.com/users/${data.username}`);
   console.log(response);
+
+  const name = response.data.name;
+  console.log(name);
 
   const html = generateHTML(data);
   return writeFileAsync("index.html", html);
