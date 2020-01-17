@@ -62,7 +62,12 @@ function generateHTML(data) {
           <meta http-equiv="X-UA-Compatible" content="ie=edge" />
           <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"/>
           <link href="https://fonts.googleapis.com/css?family=BioRhyme|Cabin&display=swap" rel="stylesheet">
-          <title>Document</title>
+          <!-- jQuery library -->
+          <script src="js/jquery.min.js"></script>
+
+          <!-- jsPDF library -->
+          <script src="js/jsPDF/dist/jspdf.min.js"></script>
+          <title>Profile Generator</title>
           <style>
               @page {
                 margin: 0;
@@ -204,7 +209,9 @@ function generateHTML(data) {
   </head>
   <body>
     <div class="container main">
+    <header class="wrapper">
       <h1 class="display-4">Hi! My GitHub username is ${data.username}</h1>
+    </header>
       <p class="lead">My color is ${data.color}.</p>
       <h3>Example heading <span class="badge badge-secondary">Contact Me</span></h3>
       <ul class="list-group">
@@ -213,6 +220,7 @@ function generateHTML(data) {
       </ul>
     </div>
   </div>
+  <div id="elementH"></div>
   </body>
   </html>`;
 }
@@ -221,7 +229,7 @@ function generateHTML(data) {
 async function createMain() {
   const data = await promptUser();
   console.log(data.username);
-
+  console.log(data.color);
   const response = await axios.get(`https://api.github.com/users/${data.username}`);
   console.log(response);
 
@@ -229,11 +237,22 @@ async function createMain() {
   console.log(name);
 
   const html = generateHTML(data);
-  return writeFileAsync("index.html", html);
 
+  var filename = data.username + ".html"
+  return writeFileAsync(filename, html), function (err) {
+
+    if (err) {
+      return console.log(err);
+    }
+
+    console.log("Success!");
+
+  };
 };
 
+
 createMain();
+
 
 // promptUser()
 //   .then(function (data) {
