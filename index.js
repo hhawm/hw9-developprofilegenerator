@@ -1,7 +1,9 @@
 const inquirer = require("inquirer");
-const fs = require("fs");
 const util = require("util");
 const axios = require("axios");
+
+var fs = require('fs');
+var pdf = require('html-pdf');
 
 const writeFileAsync = util.promisify(fs.writeFile);
 
@@ -31,255 +33,230 @@ const colors = {
     photoBorderColor: "white"
   }
 };
+
+const questions = [
+  {
+    type: "input",
+    message: "What is GitHub user name?",
+    name: "username"
+  },
+  {
+    type: "list",
+    message: "Pick a color",
+    name: "color",
+    choices: [
+      "green",
+      "blue",
+      "pink",
+      "red"
+    ]
+  }
+];
+
 function promptUser() {
-  return inquirer.prompt([
-    {
-      type: "input",
-      message: "What is GitHub user name?",
-      name: "username"
-    },
-    {
-      type: "list",
-      message: "Pick a color",
-      name: "color",
-      choices: [
-        "green",
-        "blue",
-        "pink",
-        "red"
-      ]
-    }
-  ]);
+  return inquirer.prompt(questions);
 }
 
 function generateHTML(data) {
-  return `
-    <!DOCTYPE html>
-    <html lang="en">
-       <head>
-          <meta charset="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-          <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"/>
-          <link href="https://fonts.googleapis.com/css?family=BioRhyme|Cabin&display=swap" rel="stylesheet">
-          <!-- jQuery library -->
-          <script src="js/jquery.min.js"></script>
-
-          <!-- jsPDF library -->
-          <script src="js/jsPDF/dist/jspdf.min.js"></script>
-          <title>Profile Generator</title>
-          <style>
-              @page {
-                margin: 0;
-              }
-             *,
-             *::after,
-             *::before {
-             box-sizing: border-box;
-             }
-             html, body {
-             padding: 0;
-             margin: 0;
-             }
-             html, body, .wrapper {
-             height: 100%;
-             }
-             .wrapper {
-             background-color: ${colors[data.color].wrapperBackground};
-             padding-top: 100px;
-             }
-             body {
-             background-color: white;
-             -webkit-print-color-adjust: exact !important;
-             font-family: 'Cabin', sans-serif;
-             }
-             main {
-             background-color: #E9EDEE;
-             height: auto;
-             padding-top: 30px;
-             }
-             h1, h2, h3, h4, h5, h6 {
-             font-family: 'BioRhyme', serif;
-             margin: 0;
-             }
-             h1 {
-             font-size: 3em;
-             }
-             h2 {
-             font-size: 2.5em;
-             }
-             h3 {
-             font-size: 2em;
-             }
-             h4 {
-             font-size: 1.5em;
-             }
-             h5 {
-             font-size: 1.3em;
-             }
-             h6 {
-             font-size: 1.2em;
-             }
-             .photo-header {
-             position: relative;
-             margin: 0 auto;
-             margin-bottom: -50px;
+  return `<!DOCTYPE html>
+  <html lang="en">
+     <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"/>
+        <link href="https://fonts.googleapis.com/css?family=BioRhyme|Cabin&display=swap" rel="stylesheet">
+        <title>Profile Generator</title>
+        <style>
+            @page {
+              margin: 0;
+            }
+           *,
+           *::after,
+           *::before {
+           box-sizing: border-box;
+           }
+           html, body {
+           padding: 0;
+           margin: 0;
+           }
+           html, body, .wrapper {
+           height: 100%;
+           }
+           .wrapper {
+           background-color: ${colors[data.color].wrapperBackground};
+           padding-top: 100px;
+           }
+           body {
+           background-color: white;
+           -webkit-print-color-adjust: exact !important;
+           font-family: 'Cabin', sans-serif;
+           }
+           main {
+           background-color: #E9EDEE;
+           height: auto;
+           padding-top: 30px;
+           }
+           h1, h2, h3, h4, h5, h6 {
+           font-family: 'BioRhyme', serif;
+           margin: 0;
+           }
+           h1 {
+           font-size: 3em;
+           }
+           h2 {
+           font-size: 2.5em;
+           }
+           h3 {
+           font-size: 2em;
+           }
+           h4 {
+           font-size: 1.5em;
+           }
+           h5 {
+           font-size: 1.3em;
+           }
+           h6 {
+           font-size: 1.2em;
+           }
+           .photo-header {
+           position: relative;
+           margin: 0 auto;
+           margin-bottom: -50px;
+           display: flex;
+           justify-content: center;
+           flex-wrap: wrap;
+           background-color: ${colors[data.color].headerBackground};
+           color: ${colors[data.color].headerColor};
+           padding: 10px;
+           width: 95%;
+           border-radius: 6px;
+           }
+           .photo-header img {
+           width: 250px;
+           height: 250px;
+           border-radius: 50%;
+           object-fit: cover;
+           margin-top: -75px;
+           border: 6px solid ${colors[data.color].photoBorderColor};
+           box-shadow: rgba(0, 0, 0, 0.3) 4px 1px 20px 4px;
+           }
+           .photo-header h1, .photo-header h2 {
+           width: 100%;
+           text-align: center;
+           }
+           .photo-header h1 {
+           margin-top: 10px;
+           }
+           .links-nav {
+           width: 100%;
+           text-align: center;
+           padding: 20px 0;
+           font-size: 1.1em;
+           }
+           .nav-link {
+           display: inline-block;
+           margin: 5px 10px;
+           }
+           .workExp-date {
+           font-style: italic;
+           font-size: .7em;
+           text-align: right;
+           margin-top: 10px;
+           }
+           .container {
+           padding: 50px;
+           padding-left: 100px;
+           padding-right: 100px;
+           }
+  
+           .row {
              display: flex;
-             justify-content: center;
              flex-wrap: wrap;
+             justify-content: space-between;
+             margin-top: 20px;
+             margin-bottom: 20px;
+           }
+  
+           .card {
+             padding: 20px;
+             border-radius: 6px;
              background-color: ${colors[data.color].headerBackground};
              color: ${colors[data.color].headerColor};
-             padding: 10px;
-             width: 95%;
-             border-radius: 6px;
-             }
-             .photo-header img {
-             width: 250px;
-             height: 250px;
-             border-radius: 50%;
-             object-fit: cover;
-             margin-top: -75px;
-             border: 6px solid ${colors[data.color].photoBorderColor};
-             box-shadow: rgba(0, 0, 0, 0.3) 4px 1px 20px 4px;
-             }
-             .photo-header h1, .photo-header h2 {
-             width: 100%;
-             text-align: center;
-             }
-             .photo-header h1 {
-             margin-top: 10px;
-             }
-             .links-nav {
-             width: 100%;
-             text-align: center;
-             padding: 20px 0;
-             font-size: 1.1em;
-             }
-             .nav-link {
-             display: inline-block;
-             margin: 5px 10px;
-             }
-             .workExp-date {
-             font-style: italic;
-             font-size: .7em;
-             text-align: right;
-             margin-top: 10px;
-             }
-             .container {
-             padding: 50px;
-             padding-left: 100px;
-             padding-right: 100px;
-             }
-    
-             .row {
-               display: flex;
-               flex-wrap: wrap;
-               justify-content: space-between;
-               margin-top: 20px;
-               margin-bottom: 20px;
-             }
-    
-             .card {
-               padding: 20px;
-               border-radius: 6px;
-               background-color: ${colors[data.color].headerBackground};
-               color: ${colors[data.color].headerColor};
-               margin: 20px;
-             }
-             
-             .col {
-             flex: 1;
-             text-align: center;
-             }
-    
-             a, a:hover {
-             text-decoration: none;
-             color: inherit;
-             font-weight: bold;
-             }
-    
-             @media print { 
-              body { 
-                zoom: .75; 
-              } 
-             }
-          </style>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <title>Profile Generator</title>
-  </head>
-  <body>
-    <div class="container main content">
-    <header class="wrapper">
-      <h1 class="display-4">Hi! My GitHub username is ${data.username}</h1>
-    </header>
-      <p class="lead">My color is ${data.color}.</p>
-      <h3>Example heading <span class="badge badge-secondary">Contact Me</span></h3>
-      <ul class="list-group">
-        <li class="list-group-item">na1</li>
-        <li class="list-group-item">na2</li>
-      </ul>
-    </div>
-  </div>
-  <div id="elementH"></div>
-  </body>
-  </html>`;
+             margin: 20px;
+           }
+           
+           .col {
+           flex: 1;
+           text-align: center;
+           }
+  
+           a, a:hover {
+           text-decoration: none;
+           color: inherit;
+           font-weight: bold;
+           }
+  
+           @media print { 
+            body { 
+              zoom: .75; 
+            } 
+           }
+        </style>
+        <title>Profile Generator</title>
+    </head>
+
+    <body>
+      <div class="container main">
+        <header class="wrapper">
+          <h1 class="display-4">Hi! My GitHub username is ${data.username}</h1>
+        </header>
+        <p class="lead">My color is ${data.color}</p>
+        <h3>Example heading <span class="badge badge-secondary">Contact Me</span></h3>
+        <ul class="list-group">
+          <li class="list-group-item">na1</li>
+          <li class="list-group-item">na2</li>
+        </ul>
+      </div>
+      </div>
+      
+    </body>
+
+    </html>`
 }
 
+async function init() {
+  console.log("Hello")
+  try {
+    const data = await promptUser();
+    console.log(data.username);
+    console.log(data.color);
 
-async function createMain() {
-  const data = await promptUser();
-  console.log(data.username);
-  console.log(data.color);
-  const response = await axios.get(`https://api.github.com/users/${data.username}`);
-  console.log(response);
+    const response = await axios.get(`https://api.github.com/users/${data.username}`);
+    console.log(response);
 
-  const name = response.data.name;
-  console.log(name);
+    const name = response.data.name;
+    console.log(name);
 
-  const html = generateHTML(data);
+    const html = generateHTML(data);
 
-  var filename = data.username + ".html"
-  return writeFileAsync(filename, html), function (err) {
+    var filename = data.username + ".html"
 
-    if (err) {
-      return console.log(err);
-    }
-    createPDF();
-    console.log("Success!");
+    await writeFileAsync(filename, html)
+    var html1 = fs.readFileSync(filename, 'utf8');
+    var options = { format: 'Letter' };
+    var PDFfilename = data.username + ".pdf"
 
-  };
-};
+    pdf.create(html1, options).toFile(PDFfilename, function (err, res) {
+      if (err) return console.log(err);
+      console.log(res);
+    });
 
-function createPDF() {
-  var doc = new jsPDF();
-  var elementHTML = $('#content').html();
-  var specialElementHandlers = {
-    '#elementH': function (element, renderer) {
-      return true;
-    }
-  };
-  doc.fromHTML(elementHTML, 15, 15, {
-    'width': 170,
-    'elementHandlers': specialElementHandlers
-  });
-
-  // Save the PDF
-  var PDFfilename = data.username + ".pdf"
-  return writeFileAsync(PDFfilename, pdf);
+    console.log("Successfully wrote to index.html");
+  } catch (err) {
+    console.log(err);
+  }
 }
 
-createMain();
+init();
 
-
-// promptUser()
-//   .then(function (data) {
-//     const html = generateHTML(data);
-
-//     return writeFileAsync("index.html", html);
-//   })
-//   .then(function () {
-//     console.log("Successfully wrote to index.html");
-//   })
-//   .catch(function (err) {
-//     console.log(err);
-//   });
