@@ -205,10 +205,10 @@ function generateHTML(data) {
              }
           </style>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <title>Document</title>
+    <title>Profile Generator</title>
   </head>
   <body>
-    <div class="container main">
+    <div class="container main content">
     <header class="wrapper">
       <h1 class="display-4">Hi! My GitHub username is ${data.username}</h1>
     </header>
@@ -244,12 +244,29 @@ async function createMain() {
     if (err) {
       return console.log(err);
     }
-
+    createPDF();
     console.log("Success!");
 
   };
 };
 
+function createPDF() {
+  var doc = new jsPDF();
+  var elementHTML = $('#content').html();
+  var specialElementHandlers = {
+    '#elementH': function (element, renderer) {
+      return true;
+    }
+  };
+  doc.fromHTML(elementHTML, 15, 15, {
+    'width': 170,
+    'elementHandlers': specialElementHandlers
+  });
+
+  // Save the PDF
+  var PDFfilename = data.username + ".pdf"
+  return writeFileAsync(PDFfilename, pdf);
+}
 
 createMain();
 
