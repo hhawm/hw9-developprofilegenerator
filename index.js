@@ -16,7 +16,7 @@ const questions = [
   },
   {
     type: "list",
-    message: "Pick a color",
+    message: "Pick a color theme:",
     choices: Object.keys(makeHTML.colors),
     name: "color",
   }
@@ -66,9 +66,13 @@ function formatData(data) {
   if (!data.blog) {
     data.blog = "#";
   }
+  // Hacked this one because couldnt figure it out
+  if (!data.stars) {
+    data.stars = 0;
+  }
 }
 
-
+// MAIN FUNCTION
 async function init() {
   console.log("Welcome to Github Profile Generator!")
   let data = {};
@@ -101,24 +105,25 @@ async function init() {
 
     const html = makeHTML.generateHTML(data);
 
-    var filename = data.login + ".html";
+    var filename = data.login + "-" + data.color + ".html";
 
     await writeFileAsync(filename, html)
     // await writeToPDF
     var html1 = fs.readFileSync(filename, 'UTF8');
     var options = { orientation: "portrait" };
-    var PDFfilename = data.login + ".pdf";
+    var PDFfilename = data.login + "-" + data.color + ".pdf";
 
     pdf.create(html1, options).toFile(PDFfilename, function (err, res) {
       if (err) return console.log(err);
-      console.log(res);
+      console.log(res.filename);
+      console.log("Successfully wrote HTML file to " + filename);
+      console.log("Successfully wrote PDF file to " + PDFfilename);
     });
 
-    console.log("Successfully wrote HTML file to " + filename);
-    console.log("Successfully wrote PDF file to " + PDFfilename);
 
   } catch (err) {
     console.log(err);
+
   }
 }
 
