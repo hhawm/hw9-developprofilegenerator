@@ -1,0 +1,25 @@
+{
+  "name": "hw9-developprofilegenerator",
+  "version": "1.0.0",
+  "description": "The user will be prompted for a GitHub username, and this profile generator application will dynamically generate a PDF profile. The application will be invoked with the following command:",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hhawm/hw9-developprofilegenerator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hhawm/hw9-developprofilegenerator/issues"
+  },
+  "homepage": "https://github.com/hhawm/hw9-developprofilegenerator#readme",
+  "dependencies": {
+    "axios": "^0.19.1",
+    "html-pdf": "^2.2.0",
+    "inquirer": "^7.0.3"
+  }
+}
