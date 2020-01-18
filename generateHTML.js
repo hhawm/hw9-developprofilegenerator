@@ -1,35 +1,36 @@
 const fs = require('fs');
-var pdf = require('html-pdf');
+// const pdf = require('html-pdf');
+// const axios = require("axios");
 
 const colors = {
-  green: {
-    wrapperBackground: "#E6E1C3",
-    headerBackground: "#C1C72C",
-    headerColor: "black",
-    photoBorderColor: "#black"
-  },
-  blue: {
-    wrapperBackground: "#5F64D3",
-    headerBackground: "#26175A",
-    headerColor: "white",
-    photoBorderColor: "#73448C"
-  },
-  pink: {
-    wrapperBackground: "#879CDF",
-    headerBackground: "#FF8374",
-    headerColor: "white",
-    photoBorderColor: "#FEE24C"
-  },
-  red: {
-    wrapperBackground: "#DE9967",
-    headerBackground: "#870603",
-    headerColor: "white",
-    photoBorderColor: "white"
-  }
+    green: {
+        wrapperBackground: "#E6E1C3",
+        headerBackground: "#C1C72C",
+        headerColor: "black",
+        photoBorderColor: "#black"
+    },
+    blue: {
+        wrapperBackground: "#5F64D3",
+        headerBackground: "#26175A",
+        headerColor: "white",
+        photoBorderColor: "#73448C"
+    },
+    pink: {
+        wrapperBackground: "#879CDF",
+        headerBackground: "#FF8374",
+        headerColor: "white",
+        photoBorderColor: "#FEE24C"
+    },
+    red: {
+        wrapperBackground: "#DE9967",
+        headerBackground: "#870603",
+        headerColor: "white",
+        photoBorderColor: "white"
+    }
 };
 
 function generateHTML(data) {
-  return `
+    return `
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -69,15 +70,14 @@ function generateHTML(data) {
         main {
             background-color: #E9EDEE;
             height: auto;
-            padding-top: 30px;
+            padding-top: 20px;
             padding-bottom: 5px;
         }
         h1,
         h2,
         h3,
         h4,
-        h5,
-        h6 {
+        h5 {
             font-family: 'BioRhyme', serif;
             margin: 0;
         }
@@ -96,9 +96,7 @@ function generateHTML(data) {
         h5 {
             font-size: 1.3em;
         }
-        h6 {
-            font-size: 1.2em;
-        }
+        
         .photo-header {
             position: relative;
             margin: 0 auto;
@@ -157,15 +155,15 @@ function generateHTML(data) {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            margin-top: 15px;
+            margin-bottom: 15px;
         }
         .card {
-            padding: 20px;
+            padding: 15px;
             border-radius: 6px;
             background-color: ${colors[data.color].headerBackground};
             color: ${colors[data.color].headerColor};
-            margin: 20px;
+            margin: 15px;
         }
         .col {
             flex: 1;
@@ -179,7 +177,7 @@ function generateHTML(data) {
         }
         @media print {
             body {
-                zoom: .75;
+                zoom: .70;
             }
         }
     </style>
@@ -187,33 +185,27 @@ function generateHTML(data) {
 <body>
     <div class="wrapper">
         <div class="photo-header">
-            <img src="${data.img}" alt="Avatar">
+            <img src="${data.img}" alt="profile image">
             <h5>${data.login}</h5>
-            <h1>Hi!</h1>
-            <h1>My name is ${data.name}</h1>
-            <h3>${data.bio}</h3>
+            <h1>Hi! My name is ${data.name}.</h1>
+            <h4>${data.bio}</h4>
             <div class="links-nav">
-                <a class="nav-link" target="_blank" href="${data.map}"> 
+                <a class="nav-link" href="${data.map}" target="_blank"> 
                     <i class="fas fa-location-arrow"></i>
-                    <span>${data.location}</span>
+                    <span> ${data.location} </span>
                 </a>
-                <a class="nav-link" target="_blank" href="${data.url}">
+                <a class="nav-link" href="${data.url}" target="_blank">
                     <i class="fab fa-github"></i>
-                    <span>Github</span>
+                    <span> Github </span>
                 </a>
-                <a class="nav-link" target="_blank" href="${data.blog}">
+                <a class="nav-link" href="${data.blog}" target="_blank">
                     <i class="fas fa-rss-square"></i>
-                    <span>Blog</span>
+                    <span> Blog </span>
                 </a>
             </div>
         </div>
         <main>
             <div class="container">
-                <div class="row">
-                    <div class="col">
-                        <h3>I build things and teach people to code</h3>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col card">
                         <h3>Public Repositories</h3>
@@ -242,6 +234,6 @@ function generateHTML(data) {
 }
 
 module.exports = {
-  colors: colors,
-  generateHTML: generateHTML,
+    colors: colors,
+    generateHTML: generateHTML,
 }
